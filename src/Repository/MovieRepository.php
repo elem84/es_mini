@@ -38,7 +38,7 @@ class MovieRepository extends ServiceEntityRepository
 
                 $qb->andWhere($orX);
                 $qb->setParameter('keyword' . $kw, $word.'%');
-                $qb->setParameter('keywordWhitespace' . $kw, ' '.$word.'%');
+                $qb->setParameter('keywordWhitespace' . $kw, '% '.$word.'%');
             }
         }
 
@@ -66,17 +66,11 @@ class MovieRepository extends ServiceEntityRepository
             {
                 $orX = $qb->expr()->orX();
                 $orX->add($qb->expr()->like('m.title', ':keyword' . $kw));
+                $orX->add($qb->expr()->like('m.title', ':keywordWhitespace' . $kw));
 
                 $qb->andWhere($orX);
-
-                if (0 == $kw)
-                {
-                    $qb->setParameter('keyword' . $kw, $word.'%');
-                }
-                else
-                {
-                    $qb->setParameter('keyword' . $kw, '%'.$word.'%');
-                }
+                $qb->setParameter('keyword' . $kw, $word.'%');
+                $qb->setParameter('keywordWhitespace' . $kw, '% '.$word.'%');
             }
         }
 
