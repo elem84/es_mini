@@ -1,0 +1,15 @@
+index:
+    path: /
+    controller: App\Controller\IndexController::index
+
+suggest:
+    path: /suggest
+    controller: App\Controller\SuggestController::index
+
+autocompleter:
+    path: /autocompleter
+    controller: App\Controller\AutocompleterController::index
+
+like:
+    path: /like
+    controller: App\Controller\LikeController::index

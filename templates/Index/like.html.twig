@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LIKE{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+
+                <form class="form-inline pt-3 my-2 my-lg-0" id="form-search">
+
+                    <label class="my-1 mr-2"><strong>Szukaj:</strong></label>
+                    <input class="form-control mr-sm-2"
+                           type="search"
+                           id="keyword"
+                           placeholder="nazwa filmu...">
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container" id="result-search"></div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script type="text/javascript">
+
+        var $resultSearchContainer = $('#result-search');
+
+        $('#keyword').on('input', function(e) {
+
+            var $input = $(this);
+
+            e.preventDefault();
+
+            $.ajax({
+                url: '{{ path('like') }}',
+                method: "POST",
+                data: {
+                    keyword: $input.val()
+                }
+            }).done(function(response) {
+
+                $resultSearchContainer.html(response);
+            });
+        }).focus();
+
+    </script>
+
+{% endblock %}
