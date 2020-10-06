@@ -21,6 +21,12 @@
                             Wyszukiwarka - baza danych (LIKE)
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ path('elasticsearch') }}"
+                           class="nav-link {% if app.request.get('_route') == 'elasticsearch' %}active{% endif %}">
+                            Wyszukiwarka - ElasticSearch
+                        </a>
+                    </li>
                 </ul>
 
             </div>

@@ -2,13 +2,9 @@ index:
     path: /
     controller: App\Controller\IndexController::index
 
-suggest:
-    path: /suggest
-    controller: App\Controller\SuggestController::index
-
-autocompleter:
-    path: /autocompleter
-    controller: App\Controller\AutocompleterController::index
+elasticsearch:
+    path: /elasticsearch
+    controller: App\Controller\ElasticSearchController::index
 
 like:
     path: /like

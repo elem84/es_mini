@@ -1,0 +1,54 @@
+<div class="sidebar">
+
+</div>
+<div class="content">
+
+    {% for i in items %}
+    <div class="item">
+        <div class="item-poster">
+            <img src="{{ i._source.poster }}" class="img-fluid" alt="">
+        </div>
+        <div class="item-card">
+            <div class="item-card-header">
+
+                <div class="item-card-rate">
+                    <div class="item-card-rate-star">
+                        <svg class="bi bi-star-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                        </svg>
+                    </div>
+                    {{ i._source.rate }}
+                </div>
+
+                <div class="item-card-header-title">{{ i._source.title|highlight(keyword) }}</div>
+
+                {% if i._source.title_org %}
+                    <div class="item-card-header-title-org">{{ i._source.title_org }}</div>
+                {% endif %}
+
+                <div class="item-card-header-year">{{ i._source.year }}</div>
+            </div>
+            <div class="item-card-details">
+                <div class="item-card-details-genres">
+                    <span>gatunek</span>
+                    <ul>
+                        {% for g in i._source.genres %}
+                            <li>{{ g.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="item-card-details-directors">
+                    <span>reżyser</span>
+                    <ul>
+                        {% for d in i._source.directors %}
+                            <li>{{ d.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="item-score">{{ i._score }}</div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
