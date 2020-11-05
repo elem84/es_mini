@@ -20,7 +20,7 @@ class ElasticSearchController extends AbstractController
             $words = explode(' ', $keyword);
 
             $result = $client->search([
-                'index' => 'movies_v1',
+                'index' => 'movies_v2',
                 'body' => [
                     'size' => 100,
                     'query' => [
@@ -40,7 +40,7 @@ class ElasticSearchController extends AbstractController
                                     'span_first' => [
                                         'match' => [
                                             'span_term' => [
-                                                'title' => strtolower($words[0]),
+                                                'title._index_prefix' => strtolower($words[0]),
                                             ]
                                         ],
                                         'end' => 1,
