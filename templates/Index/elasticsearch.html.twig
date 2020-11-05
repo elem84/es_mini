@@ -34,17 +34,33 @@
 
         var $resultSearchContainer = $('#result-search');
 
+        $resultSearchContainer.on('click', 'a.cat', function(e) {
+
+            e.preventDefault();
+
+            $(this).toggleClass('selected');
+
+            $('#keyword').trigger('input');
+        })
+
         $('#keyword').on('input', function(e) {
 
             var $input = $(this);
+            var genresSelected = [];
 
             e.preventDefault();
+
+            $('.sidebar a.cat.selected').each(function() {
+
+                genresSelected.push($(this).data('id'));
+            });
 
             $.ajax({
                 url: '{{ path('elasticsearch') }}',
                 method: "POST",
                 data: {
-                    keyword: $input.val()
+                    keyword: $input.val(),
+                    genres_selected: genresSelected
                 }
             }).done(function(response) {
 

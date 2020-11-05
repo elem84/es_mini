@@ -2,13 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Genre;
+use Doctrine\ORM\EntityManagerInterface;
 use Elasticsearch\ClientBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 class ElasticSearchController extends AbstractController
 {
-    public function index(Request $request)
+    public function index(
+        Request $request,
+        EntityManagerInterface $entityManager
+    )
     {
         if ($request->isXmlHttpRequest())
         {
@@ -17,7 +22,26 @@ class ElasticSearchController extends AbstractController
                 ->build();
 
             $keyword = trim($request->get('keyword'));
+            $genresSelected = $request->get('genres_selected', []);
             $words = explode(' ', $keyword);
+            $filter = [];
+
+            if (false === empty($genresSelected))
+            {
+                foreach ($genresSelected as $id)
+                {
+                    $filter[] = [
+                        'nested' => [
+                            'path' => 'genres',
+                            'query' => [
+                                'term' => [
+                                    'genres.id' => $id,
+                                ],
+                            ],
+                        ],
+                    ];
+                }
+            }
 
             $result = $client->search([
                 'index' => 'movies_v2',
@@ -25,6 +49,7 @@ class ElasticSearchController extends AbstractController
                     'size' => 100,
                     'query' => [
                         'bool' => [
+                            'filter' => $filter,
                             'must' => [
                                 'multi_match' => [
                                     'query' => $keyword,
@@ -52,9 +77,27 @@ class ElasticSearchController extends AbstractController
                 ]
             ]);
 
+            $genresCount = [];
+
+            foreach ($result['hits']['hits'] as $doc)
+            {
+                if (isset($doc['_source']['genres']))
+                {
+                    foreach ($doc['_source']['genres'] as $genre)
+                    {
+                        $genresCount[$genre['id']] = $genre['id'];
+                    }
+                }
+            }
+
             return $this->render('Index/elasticsearch-result.html.twig', [
                 'items' => $result['hits']['hits'],
                 'keyword' => $keyword,
+                'genres' => $entityManager
+                    ->getRepository(Genre::class)
+                    ->findBy([], ['name' => 'ASC']),
+                'genresCount' => $genresCount,
+                'genresSelected' => array_combine(array_values($genresSelected), array_values($genresSelected)),
             ]);
         }
 
