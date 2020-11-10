@@ -4,6 +4,9 @@
             <div>
                 <a href="#" data-id="{{ g.id }}" class="cat {% if genresSelected[g.id] is defined %}selected{% endif %}">
                     {{ g.name }}
+                    {% if genresCount[g.id] is defined %}
+                        ({{ genresCount[g.id] }})
+                    {% endif %}
                 </a>
             </div>
         {% endif %}

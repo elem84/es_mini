@@ -74,20 +74,29 @@ class ElasticSearchController extends AbstractController
                             ]
                         ],
                     ],
+                    'aggs' => [
+                        'count' => [
+                            'nested' => [
+                                'path' => 'genres',
+                            ],
+                            'aggs' => [
+                                'count_genres' => [
+                                    'terms' => [
+                                        'field' => 'genres.id',
+                                        'size' => 100,
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
                 ]
             ]);
 
             $genresCount = [];
 
-            foreach ($result['hits']['hits'] as $doc)
+            foreach ($result['aggregations']['count']['count_genres']['buckets'] as $doc)
             {
-                if (isset($doc['_source']['genres']))
-                {
-                    foreach ($doc['_source']['genres'] as $genre)
-                    {
-                        $genresCount[$genre['id']] = $genre['id'];
-                    }
-                }
+                $genresCount[$doc['key']] = $doc['doc_count'];
             }
 
             return $this->render('Index/elasticsearch-result.html.twig', [
